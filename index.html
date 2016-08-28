@@ -3,14 +3,52 @@
 <head>
 	<title>LiCo Stats</title>
 	<meta charset="utf-8" />
+	
+	<link href="style.css" rel="stylesheet" type="text/css">
+	<!--Open Sans font-->
+	<link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Open+Sans">
+	<!--Bootstrap-->
 	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<script src="https://d3js.org/d3.v4.js"></script>
+	<!--D3.js-->
+	<script src="https://d3js.org/d3.v3.min.js"></script>
+	<!--Chart-->
+	<script src="js/bubble_zoom.js"></script>
 </head>
 
 <body>
-
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-2">
+				<!--Page title and fixed menu-->
+				<ul>
+					<h4 id="title">Linux Counter Stats</h4>
+					<li><a href="#Chart" class="active">Chart</a></li>
+					<li><a href="#description">Dataset Description</a></li>
+					<li><a href="lico_jupyter.html">Dataset Exploration</a></li>
+					<li><a href="#about">About</a></li>
+					<div id="git-link"><a href="https://github.com/pigna90/va-project"><img src="img/GitHub-Mark-Light-32px.png"></a></div>
+				</ul>
+			</div>
+			<!--Chart and info box-->
+			<div class="col-md-10">
+				<button onclick="updateProva()">Click me</button>
+				<div class="col-md-7 text-center" id="chart"></div>
+				<div class="col-md-3" id="info-chart"><p id="prova">Provaaa</p></div>
+				
+			</div>
+		</div>
+	</div>
+	<!--Sections description and about-->
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-2"></div>
+			<div class="col-md-10">
+				<h3 id="description">Dataset Description</h3>
+				<h3 id="about">About</h3>
+			<div>
+		</div>
+	</div>
 </body>
-
 </html>
