@@ -1,0 +1,124 @@
+/*Global variables for palette*/
+:root{
+	--c1:#586f7c;
+	--c2:#c8bfc7;
+	--c3:#353535;
+	--c4:#7ea8be;
+	--c5:#f6fOed;
+}
+
+body {
+    margin: 0;
+}
+
+/*Menu*/
+ul {
+    list-style-type: none;
+    margin: 0px;
+    padding: 0px;
+    width: 200px;
+    background-color: var(--c3);
+    position: fixed;
+    height: 100%;
+}
+
+li a {
+    display: block;
+    text-align:left;
+    color: var(--c2);
+    padding: 10px 12px;
+    text-decoration: none;
+}
+
+li a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+li a:hover:not(.active) {
+    background-color: #555;
+    color: white;
+}
+/***************************/
+
+/*Nodes type*/
+.node {
+  cursor: pointer;
+}
+
+.node:hover {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+
+.node--leaf {
+  fill: white;
+}
+
+.label {
+  font: 11px "", Helvetica, Arial, sans-serif;
+  text-anchor: middle;
+  text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
+}
+
+.label,
+.node--root,
+.node--leaf {
+  pointer-events: none;
+}
+/***************************/
+
+/*Global page font*/
+html *{
+	font-family: 'Open Sans';
+}
+
+path {
+  stroke: #fff;
+}
+
+body{
+	background-color: var(--c5) !important;
+}
+
+#div-title{
+	height: 150px;
+	margin-bottom: 10px;
+	background-color: var(--c3)
+}
+
+#title{
+    vertical-align: middle;
+    line-height:35px;
+    margin-bottom: 30px;
+    margin-top: 10px;
+    margin-left: 10px;
+    font-size: 40px;
+    color: var(--c2);
+    padding: 12px 10px;
+}
+
+h1{
+	text-align: center;
+}
+
+#chart{
+	margin-top: 5px;
+}
+
+#git-link{
+	text-align: center;
+	margin-top: 150px;
+}
+
+#info-chart {
+    border-left: 2px solid var(--c3);
+    padding: 20px;
+    margin: 150px 1px 1px 50px;
+    width: 250px;
+    height: 350px;
+}
+
+.container-fluid {
+    padding: 0px !important;
+}
