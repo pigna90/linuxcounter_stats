@@ -5,6 +5,7 @@
 	--c3:#353535;
 	--c4:#7ea8be;
 	--c5:#f6fOed;
+	--c6:#4CAF50;
 }
 
 body {
@@ -31,7 +32,7 @@ li a {
 }
 
 li a.active {
-    background-color: #4CAF50;
+    background-color: var(--c6);
     color: white;
 }
 
@@ -103,7 +104,7 @@ h1{
 }
 
 #chart{
-	margin-top: 5px;
+	margin-top: 10px;
 }
 
 #git-link{
@@ -112,13 +113,61 @@ h1{
 }
 
 #info-chart {
-    border-left: 2px solid var(--c3);
     padding: 20px;
-    margin: 150px 1px 1px 50px;
-    width: 250px;
+    margin: 20px 1px 1px 30px;
     height: 350px;
 }
 
 .container-fluid {
     padding: 0px !important;
+}
+
+#view-form{
+	font-size: 18px;
+	margin-top: 40px;
+}
+
+.button {
+    background-color: var(--c6); /* Green */
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 20px 2px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    float: left;
+}
+
+.buttonRoot {
+    opacity: 0.6;
+}
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.svg-container# {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
+}
+
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
+
+#sections{
+	margin-top: 50vh;
 }

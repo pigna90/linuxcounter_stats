@@ -5,8 +5,56 @@ const C4 = "#7ea8be";
 const C5 = "#f6fOed";
 
 window.onload = function(){
-	var margin = 15,
-		diameter = 700;
+	bubbleChart(null)
+}
+
+/*Return the root parent with depth=1 of node e*/
+function rootParent(e){
+	if(e.depth > 1)
+		return rootParent(e.parent)
+	else
+		return e
+}
+
+/*Return the status of radio buttons*/
+function statusView(){
+	if(document.getElementById('view_all').checked)
+		return 0
+	else if(document.getElementById('view_selected').checked)
+		return 1
+}
+
+/**/
+function rewriteBubbleChart(n){
+	var svg = d3.select("svg")
+
+	svg.selectAll("text")
+		.remove()
+		
+	svg.selectAll("circle")
+		.remove()
+	
+	svg.remove()
+
+	document.getElementById('view_selected').checked = false
+	document.getElementById('view_all').checked = true
+
+	var rootButton = document.getElementById('root-button')
+	if(n == null){
+		rootButton.disabled = true
+		rootButton.style.opacity = 0.6
+	}
+	else{
+		rootButton.disabled = false
+		rootButton.style.opacity = 1
+	}
+
+	bubbleChart(n)
+}
+
+function bubbleChart(n){
+var margin = 10,
+		diameter = 630;
 
 	var color_scale = d3.scale.linear()
 		.domain([-1, 5])
@@ -25,9 +73,12 @@ window.onload = function(){
 		.sort(function(a, b) {return -(a.value - b.value);})
 
 	//Select div that will contain chart and add svg element
-	var svg = d3.select("div#chart").append("svg")
-		.attr("width", diameter)
-		.attr("height", diameter)
+	var svg = d3.select("div#chart")
+		.classed("svg-container", true) //container class to make it responsive
+		.append("svg")
+		.attr("preserveAspectRatio", "xMinYMin meet")
+		.attr("viewBox", "0 0 " + diameter + " " + diameter + "") //Responsive SVG
+		.classed("svg-content-responsive", true)
 		.append("g")
 		.attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
@@ -35,10 +86,11 @@ window.onload = function(){
 	d3.json("data/data.json", function(error, root) {
 		if (error) throw error;
 
-		//root.children = (root.children).filter(function(d){
-			//if(d.size <= 1)
-				//return d
-		//})
+		if (n != null)
+			root.children = (root.children).filter(function(d){
+				if(d.size <= n)
+					return d
+			})
 
 		var focus = root,
 			nodes = pack.nodes(root),
@@ -49,19 +101,22 @@ window.onload = function(){
 			.enter().append("circle")
 			.attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
 			.style("fill", function(d) { return d.children ? color(d.depth) : "red"; })
-			.on("click", function(d) { if (focus !== d) zoom(d), d3.event.stopPropagation(); })
+			.on("click", function(d) {
+				if (focus !== d && !statusView())
+					zoom(d), d3.event.stopPropagation();
+				else
+					rewriteBubbleChart(d.size)
+			})
 			.on("mouseover",function(d,i){
-				console.log("rootParent:")
-				console.log(rootParent(d))
 				svg.selectAll("circle")
 					.attr("stroke-width",function(e) {
-						if(root.children.indexOf(e) != -1 ){
+						if(root.children.indexOf(e) != -1 && statusView()){
 							return e.size <= rootParent(d).size ? "1.5px" : null;}
 						else
 							return null;
 					})
 					.attr("stroke",function(e) {
-						if(root.children.indexOf(e) != -1){
+						if(root.children.indexOf(e) != -1 && statusView()){
 							return e.size <= rootParent(d).size ? "#000" : null;}
 						else
 							return null;
@@ -71,7 +126,7 @@ window.onload = function(){
 				svg.selectAll("circle")
 				.attr("stroke-width",null)
 				.attr("stroke",null)
-		   ;});
+		   ;})
 
 		var text = svg.selectAll("text")
 			.data(nodes)
@@ -96,14 +151,14 @@ window.onload = function(){
 				.duration(d3.event.altKey ? 7500 : 750)
 				.tween("zoom", function(d) {
 					var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
-						return function(t) { zoomTo(i(t)); };
-			});
+					return function(t) { zoomTo(i(t)); };
+				});
 
-		transition.selectAll("text")
-			.filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
-			.style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
-			.each("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
-			.each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+			transition.selectAll("text")
+				.filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+				.style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+				.each("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
+				.each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
 		}
 
 		function zoomTo(v) {
@@ -113,12 +168,4 @@ window.onload = function(){
 		}
 	});
 	d3.select(self.frameElement).style("height", diameter + "px");
-}
-
-function rootParent(e){
-	if(e.depth > 1){
-		return rootParent(e.parent)
-	}
-	else
-		return e
 }

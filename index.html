@@ -24,7 +24,7 @@
 				<!--Page title and fixed menu-->
 				<ul>
 					<h4 id="title">Linux Counter Stats</h4>
-					<li><a href="#Chart" class="active">Chart</a></li>
+					<li><a href="#chart" class="active">Chart</a></li>
 					<li><a href="#description">Dataset Description</a></li>
 					<li><a href="lico_jupyter.html">Dataset Exploration</a></li>
 					<li><a href="#about">About</a></li>
@@ -33,21 +33,26 @@
 			</div>
 			<!--Chart and info box-->
 			<div class="col-md-10">
-				<button onclick="updateProva()">Click me</button>
 				<div class="col-md-7 text-center" id="chart"></div>
-				<div class="col-md-3" id="info-chart"><p id="prova">Provaaa</p></div>
-				
+				<div class="col-md-3" id="info-chart">
+					<form id="view-form">
+						<p>Type of interaction:</p>
+						<input type="radio" name="view" id="view_all" checked> Zoom<br>
+						<input type="radio" name="view" id="view_selected"> Ordered Selection<br>
+					</form>
+					<button id="root-button" onclick="rewriteBubbleChart(null)" class="button buttonRoot" disabled>Main Chart</button>
+				</div>
 			</div>
 		</div>
-	</div>
 	<!--Sections description and about-->
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-2"></div>
-			<div class="col-md-10">
-				<h3 id="description">Dataset Description</h3>
-				<h3 id="about">About</h3>
-			<div>
+		<div class="container-fluid">
+			<div class="row" id="sections">
+				<div class="col-md-2"></div>
+				<div class="col-md-10">
+					<h3 id="description">Dataset Description</h3>
+					<h3 id="about">About</h3>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
