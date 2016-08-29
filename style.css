@@ -63,8 +63,7 @@ li a:hover:not(.active) {
 }
 
 .label,
-.node--root,
-.node--leaf {
+.node--root {
   pointer-events: none;
 }
 /***************************/
@@ -113,7 +112,7 @@ h1{
 }
 
 #info-chart {
-    padding: 20px;
+    padding-top: 50px;
     margin: 20px 1px 1px 30px;
     height: 350px;
 }
@@ -123,20 +122,19 @@ h1{
 }
 
 #view-form{
-	font-size: 18px;
-	margin-top: 40px;
+	font-size: 15px;
 }
 
-.button {
+.button#root-button {
     background-color: var(--c6); /* Green */
     border: none;
     color: white;
-    padding: 10px 25px;
+    padding: 10px 20px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     font-size: 16px;
-    margin: 20px 2px;
+    margin: 20px 10px;
     cursor: pointer;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
@@ -170,4 +168,67 @@ h1{
 
 #sections{
 	margin-top: 50vh;
+}
+
+#i-marks {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+    margin-top: 2px;
+}
+
+/* resize images */
+#i-marks img {
+    width: 100%;
+    height: auto;
+}
+
+.settings .view{
+	width: 180px;
+}
+
+#view-form{
+	margin-left: 10px;
+	margin-top: 15px;
+}
+
+.settings{
+	display:flex;
+	width: 350px;
+	background-color: var(--c4);
+	margin-top: 5px;
+}
+
+div h4{
+	margin-left: 5px;
+	margin-bottom: 0px;
+	margin-top: 50px;
+	font-size: 18px;
+}
+
+.node-information{
+	padding: 0px;
+	margin-top: 10vh;
+	text-align: center;
+	width: 280px;
+	height: 280px;
+	border-top: 1px solid var(--c3);
+	border-radius: 100%;
+	vertical-align: middle;
+}
+
+.node-information p{
+	font-size: 12px;
+	margin-bottom: 2px;
+}
+
+.node-information .result{
+	font-size: 15px;
+	font-weight: bold;
+	margin-bottom: 20px;
+}
+
+.node-information #size{
+	margin-top: -23px;
+	margin-bottom: 10px;
 }

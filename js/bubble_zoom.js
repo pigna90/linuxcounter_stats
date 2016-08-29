@@ -92,6 +92,13 @@ var margin = 10,
 					return d
 			})
 
+		//Count machines
+		var count_machines = 0;
+		for(i in root.children)
+			count_machines += root.children[i].size;
+		
+		document.getElementById("size").innerHTML = count_machines + " Machines";
+
 		var focus = root,
 			nodes = pack.nodes(root),
 			view;
@@ -102,12 +109,13 @@ var margin = 10,
 			.attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
 			.style("fill", function(d) { return d.children ? color(d.depth) : "red"; })
 			.on("click", function(d) {
-				if (focus !== d && !statusView())
+				if (focus != d && !statusView())
 					zoom(d), d3.event.stopPropagation();
 				else
 					rewriteBubbleChart(d.size)
 			})
 			.on("mouseover",function(d,i){
+				writeNodeInformation(d)
 				svg.selectAll("circle")
 					.attr("stroke-width",function(e) {
 						if(root.children.indexOf(e) != -1 && statusView()){
@@ -123,6 +131,7 @@ var margin = 10,
 					})
 		   ;})
 		   .on("mouseout",function(d,i){
+			   deleteNodeInformation(d)
 				svg.selectAll("circle")
 				.attr("stroke-width",null)
 				.attr("stroke",null)
@@ -168,4 +177,33 @@ var margin = 10,
 		}
 	});
 	d3.select(self.frameElement).style("height", diameter + "px");
+}
+
+function writeNodeInformation(n){
+	if(n.depth != 0){
+		var label;
+		switch(n.depth){
+			case 1: label="distro";
+					break;
+			case 2: label="class";
+					break;
+			case 3: label="arch";
+					break;
+			case 4: label="cores";
+					break;
+			default: label="-";
+					break;
+		}
+		document.getElementById(label).innerHTML = n.name + " (" + n.size + ")";
+		writeNodeInformation(n.parent)
+	}
+	else
+		return null;
+}
+
+function deleteNodeInformation(n){
+	document.getElementById("distro").innerHTML = "-";
+	document.getElementById("class").innerHTML = "-";
+	document.getElementById("arch").innerHTML = "-";
+	document.getElementById("cores").innerHTML = "-";
 }
