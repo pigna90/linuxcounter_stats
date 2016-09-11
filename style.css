@@ -4,12 +4,22 @@
 	--c2:#c8bfc7;
 	--c3:#353535;
 	--c4:#7ea8be;
-	--c5:#f6fOed;
+	--c5:#f2f2f2;
 	--c6:#4CAF50;
+}
+
+/*Global page font*/
+html *{
+	font-family: 'Open Sans';
 }
 
 body {
     margin: 0;
+    background-color: var(--c5) !important;
+}
+
+.container-fluid {
+    padding: 0px !important;
 }
 
 /*Menu*/
@@ -57,7 +67,7 @@ li a:hover:not(.active) {
 }
 
 .label {
-  font: 11px "", Helvetica, Arial, sans-serif;
+  font: 15 "" Helvetica, Arial, sans-serif;
   text-anchor: middle;
   text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
 }
@@ -68,23 +78,8 @@ li a:hover:not(.active) {
 }
 /***************************/
 
-/*Global page font*/
-html *{
-	font-family: 'Open Sans';
-}
-
 path {
   stroke: #fff;
-}
-
-body{
-	background-color: var(--c5) !important;
-}
-
-#div-title{
-	height: 150px;
-	margin-bottom: 10px;
-	background-color: var(--c3)
 }
 
 #title{
@@ -98,56 +93,14 @@ body{
     padding: 12px 10px;
 }
 
-h1{
+#git-link{
 	text-align: center;
+	margin-top: 32vh;
 }
 
 #chart{
 	margin-top: 10px;
-}
-
-#git-link{
-	text-align: center;
-	margin-top: 150px;
-}
-
-#info-chart {
-    padding-top: 50px;
-    margin: 20px 1px 1px 30px;
-    height: 350px;
-}
-
-.container-fluid {
-    padding: 0px !important;
-}
-
-#view-form{
-	font-size: 15px;
-}
-
-.button#root-button {
-    background-color: var(--c6); /* Green */
-    border: none;
-    color: white;
-    padding: 10px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 20px 10px;
-    cursor: pointer;
-    -webkit-transition-duration: 0.4s; /* Safari */
-    transition-duration: 0.4s;
-    float: left;
-}
-
-.buttonRoot {
-    opacity: 0.6;
-}
-
-.disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
+	margin-left: 20px;
 }
 
 .svg-container# {
@@ -161,74 +114,123 @@ h1{
 
 .svg-content-responsive {
     display: inline-block;
-    position: absolute;
     top: 10px;
     left: 0;
 }
 
-#sections{
-	margin-top: 50vh;
+hr{
+	border-top: 1px solid #d9d9d9;
+	margin-left: 5px;
+	margin-right: 5px;
+	margin-top: 5px !important;
+	margin-bottom: 10px !important;
 }
 
-#i-marks {
-    width: 20px;
-    height: 20px;
-    margin-left: 10px;
-    margin-top: 2px;
+#info-chart {
+    padding:10px;
+    margin: 5vh 0px 0px 5vw;
+    height: 580px;
+    text-align: center;
+    width: 285px;
 }
 
-/* resize images */
-#i-marks img {
-    width: 100%;
-    height: auto;
+#info-chart .dashboard-label{
+	margin: 10px;
+	text-align: left;
 }
 
-.settings .view{
-	width: 180px;
-}
-
-#view-form{
+#info-chart p{
+	font-size: 15px;
 	margin-left: 10px;
-	margin-top: 15px;
+	margin-top: 10px;
+}
+
+.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
 }
 
 .settings{
-	display:flex;
-	width: 350px;
-	background-color: var(--c4);
-	margin-top: 5px;
+	display:inline-block;
+	text-align: left;
+	float: left;
+	width: 100%;
+	height: 20%;
+	margin-bottom: 5%;
+	vertical-align: left;
+	text-align: left;
+	background-color: white;
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
 }
 
-div h4{
-	margin-left: 5px;
-	margin-bottom: 0px;
-	margin-top: 50px;
-	font-size: 18px;
+.settings #view-form{
+	font-size: 15px;
+	margin-left: 7px;
+}
+
+.settings label{
+	font-weight: bold;
 }
 
 .node-information{
-	padding: 0px;
-	margin-top: 10vh;
+	width: 100%;
+	height: 65%;
+	display: inline-block;
+	border: 1px solid #d9d9d9;
+	background-color: white;
+	margin-bottom: 10%;
+	box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+
+.node-information #size{
 	text-align: center;
-	width: 280px;
-	height: 280px;
-	border-top: 1px solid var(--c3);
-	border-radius: 100%;
-	vertical-align: middle;
+	margin: 0px;
 }
 
 .node-information p{
+	text-align: center;
 	font-size: 12px;
 	margin-bottom: 2px;
 }
 
 .node-information .result{
-	font-size: 15px;
+	text-align: center;
+	font-size: 17px;
 	font-weight: bold;
 	margin-bottom: 20px;
 }
 
-.node-information #size{
-	margin-top: -23px;
-	margin-bottom: 10px;
+#info-chart .button#root-button {
+    background-color: var(--c6); /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    float: left;
+}
+
+.buttonRoot {
+    opacity: 0.6;
+}
+
+#info-chart #button{
+	display: inline-block;
+	margin-top: 10px;
+}
+
+#sections{
+	margin-top: 5%;
+}
+
+#sections .content{
+	width: 76vw;
+	text-align: justify;
+    text-justify: inter-word;
+    font-size: 17px;
 }

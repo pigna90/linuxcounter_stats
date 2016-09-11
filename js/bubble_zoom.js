@@ -2,10 +2,14 @@ const C1 = "#586f7c";
 const C2 = "#c8bfc7";
 const C3 = "#353535";
 const C4 = "#7ea8be";
-const C5 = "#f6fOed";
+const C5 = "#f2f2f2";
 
 window.onload = function(){
 	bubbleChart(null)
+
+	var svg = d3.select("svg");
+	 console.log(svg.style("height"));
+	
 }
 
 /*Return the root parent with depth=1 of node e*/
@@ -16,15 +20,15 @@ function rootParent(e){
 		return e
 }
 
-/*Return the status of radio buttons*/
-function statusView(){
+/*Return the status of radio buttons in mode panel*/
+function statusRadioButton(){
 	if(document.getElementById('view_all').checked)
 		return 0
-	else if(document.getElementById('view_selected').checked)
+	else
 		return 1
 }
 
-/**/
+/*Delete and rewrite chart*/
 function rewriteBubbleChart(n){
 	var svg = d3.select("svg")
 
@@ -36,8 +40,12 @@ function rewriteBubbleChart(n){
 	
 	svg.remove()
 
-	document.getElementById('view_selected').checked = false
-	document.getElementById('view_all').checked = true
+	b_selected = document.getElementById('view_selected')
+	b_all = document.getElementById('view_all')
+	b_selected.checked = false
+	b_all.checked = true
+	radioChecked(b_selected)
+	radioChecked(b_all)
 
 	var rootButton = document.getElementById('root-button')
 	if(n == null){
@@ -54,22 +62,17 @@ function rewriteBubbleChart(n){
 
 function bubbleChart(n){
 var margin = 10,
-		diameter = 630;
+		diameter = 800;
 
-	var color_scale = d3.scale.linear()
-		.domain([-1, 5])
-		.range(["green", "yellow"])
-		.interpolate(d3.interpolateHcl);
-
-	//Set root color to body color
-	var color = function(d){ return d == 0 ? "white" : color_scale(d)}
+	var linearSize = d3.scale.linear()
+		.domain([1,14027])
+		.range([30,14027])
 
 	//Layout settings for bubbles
 	var pack = d3.layout.pack()
-		.padding(3)
+		.padding(1)
 		.size([diameter - margin, diameter - margin])
-		.value(function(d) { return d.size; })
-		.radius(10)
+		.value(function(d) { return linearSize(d.size); })
 		.sort(function(a, b) {return -(a.value - b.value);})
 
 	//Select div that will contain chart and add svg element
@@ -86,56 +89,79 @@ var margin = 10,
 	d3.json("data/data.json", function(error, root) {
 		if (error) throw error;
 
+		//Select node with size minor of n
 		if (n != null)
 			root.children = (root.children).filter(function(d){
 				if(d.size <= n)
 					return d
 			})
 
-		//Count machines
-		var count_machines = 0;
-		for(i in root.children)
-			count_machines += root.children[i].size;
-		
-		document.getElementById("size").innerHTML = count_machines + " Machines";
-
+		//Start with focus on root
 		var focus = root,
 			nodes = pack.nodes(root),
 			view;
+
+		//Count machines
+		var count_machines = 0;
+		var maxR = 0;
+		for(i in root.children){
+			count_machines += root.children[i].size;
+			
+			if(root.children[i].r > maxR)
+				maxR = root.children[i].r;
+		}
+		
+		document.getElementById("size").innerHTML = count_machines + " Machines";
 
 		var circle = svg.selectAll("circle")
 			.data(nodes)
 			.enter().append("circle")
 			.attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-			.style("fill", function(d) { return d.children ? color(d.depth) : "red"; })
+			.style("fill", function(d) { return color(d.depth) })
 			.on("click", function(d) {
-				if (focus != d && !statusView())
+				//Choose action based on type of mode: zoom or nodes selection
+				console.log(statusRadioButton())
+				console.log(focus != d)
+				if (focus != d && !statusRadioButton())
 					zoom(d), d3.event.stopPropagation();
-				else
+				else if(statusRadioButton())
 					rewriteBubbleChart(d.size)
 			})
 			.on("mouseover",function(d,i){
 				writeNodeInformation(d)
+				
+				var machines = document.getElementById("size")
+				machines.innerHTML = d.size + " Machines";
+				machines.style.color = color(d.depth)
+				//Highlight only node with size minor of node selected e
 				svg.selectAll("circle")
 					.attr("stroke-width",function(e) {
-						if(root.children.indexOf(e) != -1 && statusView()){
+						if(root.children.indexOf(e) != -1 && statusRadioButton()){
 							return e.size <= rootParent(d).size ? "1.5px" : null;}
 						else
 							return null;
 					})
 					.attr("stroke",function(e) {
-						if(root.children.indexOf(e) != -1 && statusView()){
+						if(root.children.indexOf(e) != -1 && statusRadioButton()){
 							return e.size <= rootParent(d).size ? "#000" : null;}
 						else
 							return null;
 					})
 		   ;})
 		   .on("mouseout",function(d,i){
-			   deleteNodeInformation(d)
+				deleteNodeInformation(d)
+
+				var machines = document.getElementById("size")
+				machines.innerHTML = count_machines + " Machines";
+				machines.style.color = "black"
+				
 				svg.selectAll("circle")
 				.attr("stroke-width",null)
 				.attr("stroke",null)
 		   ;})
+		
+		circle.append("svg:title")
+			.text(function(){return statusRadioButton() ? "Click to redraw with selected" : "Click to Zoom" })
 
 		var text = svg.selectAll("text")
 			.data(nodes)
@@ -143,17 +169,36 @@ var margin = 10,
 			.attr("class", "label")
 			.style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
 			.style("display", function(d) { return d.parent === root ? "inline" : "none"; })
-			.text(function(d) { return d.size + (d.size > 14 ? d.name : null); });
+			.attr("text-anchor", "middle")
+			.attr("dy", ".35em")
+			//.style("font-size", function(d) {
+					//var len = d.name.length;
+					//var size = (d.r * d.depth)/3;
+					//size *= 10 / len;
+					//size += 1;
+					//return (Math.round(size)) +'px';
+			//})
+			//.text(function(d) {
+				//var text = d.name.substring(0, d.r / 3);
+				//return (d.r/maxR)*100 >= 20 ? text : null
+			//})
+			.text(function(d) {
+				var name = d.name
+				name = name.replace(" ","\n")
+				return (d.r/maxR)*100 >= 20 ? d.name : null
+			})
 
+		
 		var node = svg.selectAll("circle,text");
 
 		d3.select("body")
-			.style("background", color(-1))
 			.on("click", function() { zoom(root); });
 
+		//Initial focus on all bubbles
 		zoomTo([root.x, root.y, root.r * 2 + margin]);
 
 		function zoom(d) {
+			console.log(d)
 			var focus0 = focus; focus = d;
 
 			var transition = d3.transition()
@@ -166,8 +211,35 @@ var margin = 10,
 			transition.selectAll("text")
 				.filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
 				.style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
+				.attr("class", "label")
 				.each("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
-				.each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; });
+				.each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; })
+				//.style("font-size", function(d) {
+					//var len = d.name.length;
+					//var size = (d.r * d.depth)/3;
+					//size *= 10 / len;
+					//size += 1;
+					//return (Math.round(size)) +'px';
+				//})
+				//.text(function(e) {
+					//if(d.name == "machine"){
+						//var text = e.name.substring(0, e.r / 3);
+						//return (e.r/maxR)*100 >= 20 ? text : null
+					//}
+					//else{
+						//var text = e.name.substring(0, (e.r*e.depth) / 3);
+						//return (e.r/d.r)*100 >= 20 ? text : null
+					//}
+				//})
+				.text(function(e) {
+					if(d.name == "machine"){
+						return (e.r/maxR)*100 >= 20 ? e.name : null
+					}
+					else{
+						return (e.r/d.r)*100 >= 20 ? e.name : null
+					}
+				})
+				
 		}
 
 		function zoomTo(v) {
@@ -194,7 +266,9 @@ function writeNodeInformation(n){
 			default: label="-";
 					break;
 		}
-		document.getElementById(label).innerHTML = n.name + " (" + n.size + ")";
+		textBox = document.getElementById(label)
+		textBox.innerHTML = n.name;
+		textBox.style.color = color(n.depth)
 		writeNodeInformation(n.parent)
 	}
 	else
@@ -206,4 +280,49 @@ function deleteNodeInformation(n){
 	document.getElementById("class").innerHTML = "-";
 	document.getElementById("arch").innerHTML = "-";
 	document.getElementById("cores").innerHTML = "-";
+}
+
+function radioChecked(e){
+	labels = document.getElementById("view-form").getElementsByTagName("label");
+	if(labels[0].getAttribute("for") == e.getAttribute("id")){
+		labels[0].style.fontWeight = "bold"
+		labels[1].style.fontWeight = "normal"
+	}
+	else{
+		labels[1].style.fontWeight = "bold"
+		labels[0].style.fontWeight = "normal"
+	}
+}
+
+function checkVisible(elm) {
+  var rect = elm.getBoundingClientRect();
+  var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+  return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
+}
+
+function color(d){
+		switch(d){
+			case -1:
+				return "#729EA1";
+				break;
+			case 1:
+				return "#7CB518";
+				break;
+
+			case 2:
+				return "#F7B32B";
+				break;
+
+			case 3:
+				return "#5BC0EB";
+				break;
+
+			case 4:
+				return "#EF5B5B";
+				break;
+				
+			default:
+				return C5;
+				break;
+		}
 }

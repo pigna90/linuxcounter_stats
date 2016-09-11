@@ -35,25 +35,28 @@
 			<!--Chart and info box-->
 			<div class="col-md-10">
 				<div class="col-md-7 text-center" id="chart"></div>
-				<div class="col-md-3" id="info-chart">
-					<div class="node-information">
-						<p class="result" id="size">1000</p>
-						<p>Distro</p><p class="result" id="distro">-</p>
-						<p>Class</p><p class="result" id="class">-</p>
-						<p>Architecture</p><p class="result" id="arch">-</p>
-						<p>Cores</p><p class="result" id="cores">-</p>
-					</div>
-					<h4>Settings</h4>
-					<div class="settings">
-						<div class="view">
+				<div class="col-md-3">
+					<div id="info-chart">
+						<div class="settings">
+							<p class="dashboard-label"><b>Settings</b></p>
+							<hr>
 							<form id="view-form">
-								<input type="radio" name="view" id="view_all" checked />
-									<label for="view_all"> Zoom</label><br>
-								<input type="radio" name="view" id="view_selected">
-									<label for="view_selected"> Ordered Selection</label>
+								<input onclick="radioChecked(this)" type="radio" name="view" id="view_all" checked />
+									<label  style="font-weight:bold" for="view_all"> Zoom</label><br>
+								<input onclick="radioChecked(this)" type="radio" name="view" id="view_selected">
+									<label style="font-weight:normal" for="view_selected"> Ordered Selection</label>
 							</form>
 						</div>
-						<div>
+						<div class="node-information">
+							<p class="dashboard-label"><b>Info Node</b></p>
+							<hr>
+							<p class="result" id="size">-</p>
+							<p>Distro</p><p class="result" id="distro">-</p>
+							<p>Class</p><p class="result" id="class">-</p>
+							<p>Architecture</p><p class="result" id="arch">-</p>
+							<p>Cores</p><p class="result" id="cores">-</p>
+						</div>
+						<div id="button">
 							<button id="root-button" onclick="rewriteBubbleChart(null)" class="button buttonRoot" disabled>Main Chart</button>
 						</div>
 					</div>
@@ -62,11 +65,15 @@
 		</div>
 	</div>
 	<!--Sections description and about-->
-	<div class="container-fluid">
-		<div class="row" id="sections">
+	<div class="container-fluid" id="sections">
+		<div class="row">
 			<div class="col-md-2"></div>
 			<div class="col-md-10">
 				<h3 id="description">Dataset Description</h3>
+				<p class="content">
+					This visualization is based on data from <a href="https://www.linuxcounter.net/">linuxcounter.net</a>, a site that collects informations about the diffusion of linux machines in the world.  After data preparation, each machine is characterized to four attributes: <b>Distribution, Class, Architecture and Number of Cores</b>. The chart allows to explore the data in a hierarchical way where each attribute represents a node. 
+				</p>
+				<h3 id="guide">Guide</h3>
 				<h3 id="about">About</h3>
 			</div>
 		</div>
