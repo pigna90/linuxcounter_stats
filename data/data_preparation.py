@@ -57,9 +57,6 @@ def hierarchical_json(df):
 				for core in core_attr:
 					core_dict = {}
 					core_dict["name"] = core
-					if(core == 0)
-						print(core)
-						quit()
 
 					core_df = arch_df[arch_df["numCores"] == core]
 					core_dict["size"] = core_df.shape[0]
@@ -88,12 +85,13 @@ def main():
 	df = df.replace("\\N","unknown")
 	df = df.fillna("unknown")
 
+	df = df[df["numCores"] != "0"]
 	
 	for a in df:
 		df = df[df[a] != "unknown"]
 
 	data_out = hierarchical_json(df)
-	quit()
+	
 	with open('data.json', 'w') as outfile:
 		json.dump(data_out, outfile, ensure_ascii=False)
 	
