@@ -95,7 +95,7 @@ path {
 
 #git-link{
 	text-align: center;
-	margin-top: 32vh;
+	margin-top: 16vw;
 }
 
 #chart{
@@ -232,4 +232,10 @@ hr{
 	text-align: justify;
     text-justify: inter-word;
     font-size: 17px;
+}
+
+#sections #example{
+	width: 76vw;
+	text-align: center;
+	margin: 10px;
 }

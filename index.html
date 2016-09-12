@@ -74,7 +74,38 @@
 					This visualization is based on data from <a href="https://www.linuxcounter.net/">linuxcounter.net</a>, a site that collects informations about the diffusion of linux machines in the world.  After data preparation, each machine is characterized to four attributes: <b>Distribution, Class, Architecture and Number of Cores</b>. The chart allows to explore the data in a hierarchical way where each attribute represents a node. 
 				</p>
 				<h3 id="guide">Guide</h3>
+				<p class="content">
+					The chart is made of a group of bubbles arranged clockwise based on their size. A bubble consist in a set of machines with some properties in common and each attribute represents a specific level of the hierarchy as shown below:
+				</p>
+				<div id="example">
+					<svg width="521" height="100">
+						<g>
+							<circle cx="100" cy="100" r="100" fill="#7CB518"/>
+							<text class="label" dy="95" dx="100">Distro</text>
+						</g>
+						<g>
+							<circle cx="274" cy="100" r="70" fill="#F7B32B" />
+							<text class="label" dy="95" dx="274">Class</text>
+						</g>
+						<g>
+							<circle cx="398" cy="100" r="50" fill="#5BC0EB" />
+							<text class="label" dy="95" dx="398">Arch.</text>
+						</g>
+						<g>
+							<circle cx="486" cy="100" r="35" fill="#EF5B5B" />
+							<text class="label" dy="95" dx="486">Cores</text>
+						</g>
+					</svg>
+				</div>
+				<p class="content">
+					The first way to interact with the graph is to click on a bubble to <b>Zoom</b> in. This allow to select machines of a specific hierarchy level. To help exploration is possible redraw only a partition of bubbels by selecting <b>Ordered Selection</b> in the Settings panel. Clicking on the button the zoom function is disabled and selecting a bubble will be highlighted all those with size less or equal than selected one. The goal is focus on bubbles too difficult to select because have few elements. The <b>Main Chart</b> button will be enabled after redraw to go back before the redrawing. <b>Info Nodes</b> panel show information of nodes on mouseover on one of these.
+				</p>
 				<h3 id="about">About</h3>
+				<p class="content">
+					This site is a project made for educational purpose as final test of course <a href="http://www.di.unipi.it/it/didattica/wbi-lm">Visual Analytics at University of Pisa</a>. The principal goal is use of <a href="https://d3js.org/">D3.js</a> in the context of data analysis. Folow the Git Hub link on the left for contacts and code.
+				</p>
+				<br>
+				<br>
 			</div>
 		</div>
 	</div>

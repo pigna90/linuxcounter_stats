@@ -157,25 +157,14 @@ var margin = 10,
 		circle.append("title")
 			.text(function(){return statusRadioButton() ? "Click to redraw with selected" : "Click to Zoom" })
 
-		var text = svg.selectAll("text")
+		var text = svg.selectAll("text").filter(".chart")
 			.data(nodes)
 			.enter().append("text")
-			.attr("class", "label")
+			.attr("class", "label chart")
 			.style("fill-opacity", function(d) { return d.parent === root ? 1 : 0; })
 			.style("display", function(d) { return d.parent === root ? "inline" : "none"; })
 			.attr("text-anchor", "middle")
 			.attr("dy", ".35em")
-			//.style("font-size", function(d) {
-					//var len = d.name.length;
-					//var size = (d.r * d.depth)/3;
-					//size *= 10 / len;
-					//size += 1;
-					//return (Math.round(size)) +'px';
-			//})
-			//.text(function(d) {
-				//var text = d.name.substring(0, d.r / 3);
-				//return (d.r/maxR)*100 >= 20 ? text : null
-			//})
 			.text(function(d) {
 				var name = d.name
 				name = name.replace(" ","\n")
@@ -192,7 +181,6 @@ var margin = 10,
 		zoomTo([root.x, root.y, root.r * 2 + margin]);
 
 		function zoom(d) {
-			console.log(d)
 			var focus0 = focus; focus = d;
 
 			var transition = d3.transition()
@@ -202,29 +190,12 @@ var margin = 10,
 					return function(t) { zoomTo(i(t)); };
 				});
 
-			transition.selectAll("text")
+			transition.selectAll("text").filter(".chart")
 				.filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
 				.style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
-				.attr("class", "label")
+				.attr("class", "label chart")
 				.each("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
 				.each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; })
-				//.style("font-size", function(d) {
-					//var len = d.name.length;
-					//var size = (d.r * d.depth)/3;
-					//size *= 10 / len;
-					//size += 1;
-					//return (Math.round(size)) +'px';
-				//})
-				//.text(function(e) {
-					//if(d.name == "machine"){
-						//var text = e.name.substring(0, e.r / 3);
-						//return (e.r/maxR)*100 >= 20 ? text : null
-					//}
-					//else{
-						//var text = e.name.substring(0, (e.r*e.depth) / 3);
-						//return (e.r/d.r)*100 >= 20 ? text : null
-					//}
-				//})
 				.text(function(e) {
 					if(d.name == "machine"){
 						return (e.r/maxR)*100 >= 20 ? toAcronym(e.name) : null
@@ -232,8 +203,7 @@ var margin = 10,
 					else{
 						return (e.r/d.r)*100 >= 10 ? e.name : null
 					}
-				})
-				
+				})	
 		}
 
 		function zoomTo(v) {
