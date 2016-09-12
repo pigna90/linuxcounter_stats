@@ -5,11 +5,7 @@ const C4 = "#7ea8be";
 const C5 = "#f2f2f2";
 
 window.onload = function(){
-	bubbleChart(null)
-
-	var svg = d3.select("svg");
-	 console.log(svg.style("height"));
-	
+	bubbleChart(null)	
 }
 
 /*Return the root parent with depth=1 of node e*/
@@ -120,8 +116,6 @@ var margin = 10,
 			.style("fill", function(d) { return color(d.depth) })
 			.on("click", function(d) {
 				//Choose action based on type of mode: zoom or nodes selection
-				console.log(statusRadioButton())
-				console.log(focus != d)
 				if (focus != d && !statusRadioButton())
 					zoom(d), d3.event.stopPropagation();
 				else if(statusRadioButton())
@@ -160,7 +154,7 @@ var margin = 10,
 				.attr("stroke",null)
 		   ;})
 		
-		circle.append("svg:title")
+		circle.append("title")
 			.text(function(){return statusRadioButton() ? "Click to redraw with selected" : "Click to Zoom" })
 
 		var text = svg.selectAll("text")
@@ -185,7 +179,7 @@ var margin = 10,
 			.text(function(d) {
 				var name = d.name
 				name = name.replace(" ","\n")
-				return (d.r/maxR)*100 >= 20 ? d.name : null
+				return (d.r/maxR)*100 >= 20 ? toAcronym(d.name) : null
 			})
 
 		
@@ -233,10 +227,10 @@ var margin = 10,
 				//})
 				.text(function(e) {
 					if(d.name == "machine"){
-						return (e.r/maxR)*100 >= 20 ? e.name : null
+						return (e.r/maxR)*100 >= 20 ? toAcronym(e.name) : null
 					}
 					else{
-						return (e.r/d.r)*100 >= 20 ? e.name : null
+						return (e.r/d.r)*100 >= 10 ? e.name : null
 					}
 				})
 				
@@ -300,29 +294,42 @@ function checkVisible(elm) {
   return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
 }
 
-function color(d){
-		switch(d){
-			case -1:
-				return "#729EA1";
-				break;
-			case 1:
-				return "#7CB518";
-				break;
-
-			case 2:
-				return "#F7B32B";
-				break;
-
-			case 3:
-				return "#5BC0EB";
-				break;
-
-			case 4:
-				return "#EF5B5B";
-				break;
-				
-			default:
-				return C5;
-				break;
+function toAcronym(s){
+	words = s.split(" ")
+	var out = ""
+	if(words.length > 1){
+		for(i in words){
+			out += words[i][0] + " "
 		}
+		return out
+	}
+	else
+		return s
+}
+
+function color(d){
+	switch(d){
+		case -1:
+			return "#729EA1";
+			break;
+		case 1:
+			return "#7CB518";
+			break;
+
+		case 2:
+			return "#F7B32B";
+			break;
+
+		case 3:
+			return "#5BC0EB";
+			break;
+
+		case 4:
+			return "#EF5B5B";
+			break;
+			
+		default:
+			return C5;
+			break;
+	}
 }

@@ -67,7 +67,7 @@ li a:hover:not(.active) {
 }
 
 .label {
-  font: 15 "" Helvetica, Arial, sans-serif;
+  font: 18px "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   text-anchor: middle;
   text-shadow: 0 1px 0 #fff, 1px 0 0 #fff, -1px 0 0 #fff, 0 -1px 0 #fff;
 }
@@ -141,7 +141,6 @@ hr{
 
 #info-chart p{
 	font-size: 15px;
-	margin-left: 10px;
 	margin-top: 10px;
 }
 
