@@ -71,11 +71,11 @@
 			<div class="col-md-10">
 				<h3 id="description">Dataset Description</h3>
 				<p class="content">
-					This visualization is based on data from <a href="https://www.linuxcounter.net/">linuxcounter.net</a>, a site that collects informations about the diffusion of linux machines in the world.  After data preparation, each machine is characterized to four attributes: <b>Distribution, Class, Architecture and Number of Cores</b>. The chart allows to explore the data in a hierarchical way where each attribute represents a node. 
+					This view represents the data in <a href="https://www.linuxcounter.net/">linuxcounter.net</a>, a site that stores stats about the spread of linux devices in the world. The data, after the initial processing, contain the set of linux machines characterized by four attributes: <b>Distribution,Class,Architecture and Number of Cores</b>. The chart allows exploring the data in a hierarchical way in which each attribute represents a node.
 				</p>
 				<h3 id="guide">Guide</h3>
 				<p class="content">
-					The chart is made of a group of bubbles arranged clockwise based on their size. A bubble consists in a set of machines with properties in common and each attribute represents a specific level of the hierarchy as shown below:
+					The chart is composed of groups of bubbles arranged clockwise to their size. Every bubble represents a set of machines with properties in common and each attribute matches a specific level of the hierarchy as shown below:
 				</p>
 				<div id="example">
 					<svg width="521" height="100">
@@ -98,7 +98,7 @@
 					</svg>
 				</div>
 				<p class="content">
-					The first way to interact with the graph is to click on a bubble to <b>Zoom</b> inside it. This allows to select machines of a specific hierarchy level. To help the exploration is possible to redraw only a partition of bubbels by selecting <b>Ordered Selection</b> in the Settings panel. Clicking on the radio button the zoom function is disabled and selecting a bubble, all those with size less or equal than selected one, will be highlighted. The aim is to focus the attention on bubbles too difficult to select because characterized of few elements. The <b>Main Chart</b> button will be enabled after the bubbles having been redrawd. <b>Info Nodes</b> shows informations about nodes when mouse goes over it.
+					The interaction with the graph is possible through clicking on a bubble to <b>zoom</b> on it. This allows to select a set of machines of a specific hierarchy level. It's also possible to reshape only a subset of bubbles through  the <b>Ordered Selection</b> option in the Setting panel, a click on the radio button results in the disabling of the zoom function and at this point the selection of a bubble causes the highlighting of the bubbles with size less or equal than the selected one's. This function helps the selection of the smallest bubbles, those that have few elements. The <b>Main Chart</b> button will be enabled only after the bubble will be reshaped. When the mouse override a node the <b>Info Nodes</b> shows information about that node.
 				</p>
 				<h3 id="about">About</h3>
 				<p class="content">
