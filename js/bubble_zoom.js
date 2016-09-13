@@ -9,9 +9,9 @@ window.onload = function(){
 }
 
 /*Return the root parent with depth=1 of node e*/
-function rootParent(e){
-	if(e.depth > 1)
-		return rootParent(e.parent)
+function rootParent(d,e){
+	if(e.depth > d)
+		return rootParent(d,e.parent)
 	else
 		return e
 }
@@ -61,8 +61,8 @@ var margin = 10,
 		diameter = 800;
 
 	var linearSize = d3.scale.linear()
-		.domain([1,14027])
-		.range([30,14027])
+		.domain([1,13688])
+		.range([10,13688])
 
 	//Layout settings for bubbles
 	var pack = d3.layout.pack()
@@ -129,17 +129,11 @@ var margin = 10,
 				machines.style.color = color(d.depth)
 				//Highlight only node with size minor of node selected e
 				svg.selectAll("circle")
-					.attr("stroke-width",function(e) {
-						if(root.children.indexOf(e) != -1 && statusRadioButton()){
-							return e.size <= rootParent(d).size ? "1.5px" : null;}
+					.attr("opacity",function(e){
+						if(statusRadioButton())
+							return rootParent(1,e).size <= rootParent(1,d).size ? null : 0.2;
 						else
-							return null;
-					})
-					.attr("stroke",function(e) {
-						if(root.children.indexOf(e) != -1 && statusRadioButton()){
-							return e.size <= rootParent(d).size ? "#000" : null;}
-						else
-							return null;
+							return e != d && rootParent(d.depth,e) != d ? 0.2 : null;
 					})
 		   ;})
 		   .on("mouseout",function(d,i){
@@ -150,12 +144,11 @@ var margin = 10,
 				machines.style.color = "black"
 				
 				svg.selectAll("circle")
-				.attr("stroke-width",null)
-				.attr("stroke",null)
+				.attr("opacity",null)
 		   ;})
 		
 		circle.append("title")
-			.text(function(){return statusRadioButton() ? "Click to redraw with selected" : "Click to Zoom" })
+			.text(function(){return statusRadioButton() ? "Click to Redraw" : "Click to Zoom" })
 
 		var text = svg.selectAll("text").filter(".chart")
 			.data(nodes)
@@ -248,13 +241,16 @@ function deleteNodeInformation(n){
 
 function radioChecked(e){
 	labels = document.getElementById("view-form").getElementsByTagName("label");
+	var circle = d3.select("svg").selectAll("circle")
 	if(labels[0].getAttribute("for") == e.getAttribute("id")){
 		labels[0].style.fontWeight = "bold"
 		labels[1].style.fontWeight = "normal"
+		circle.select("title").text("Click to Zoom")
 	}
 	else{
 		labels[1].style.fontWeight = "bold"
 		labels[0].style.fontWeight = "normal"
+		circle.select("title").text("Click to Redraw")
 	}
 }
 
