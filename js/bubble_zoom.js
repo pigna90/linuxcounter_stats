@@ -113,7 +113,16 @@ var margin = 10,
 			.data(nodes)
 			.enter().append("circle")
 			.attr("class", function(d) { return d.parent ? d.children ? "node" : "node node--leaf" : "node node--root"; })
-			.style("fill", function(d) { return color(d.depth) })
+			.style("fill", function(d) {
+				if(d.depth == 0)
+					return color(d.depth)
+				else
+					if (d.parent.r == d.r && d.depth != 4){
+						return color(d.parent.depth)
+					}
+					else
+						return color(d.depth)
+			})
 			.on("click", function(d) {
 				//Choose action based on type of mode: zoom or nodes selection
 				if (focus != d && !statusRadioButton())
@@ -185,6 +194,7 @@ var margin = 10,
 
 			transition.selectAll("text").filter(".chart")
 				.filter(function(d) { return d.parent === focus || this.style.display === "inline"; })
+				.transition().duration(function(){return focus.depth > focus0.depth ? 200 : 0})
 				.style("fill-opacity", function(d) { return d.parent === focus ? 1 : 0; })
 				.attr("class", "label chart")
 				.each("start", function(d) { if (d.parent === focus) this.style.display = "inline"; })
@@ -194,9 +204,10 @@ var margin = 10,
 						return (e.r/maxR)*100 >= 20 ? toAcronym(e.name) : null
 					}
 					else{
-						return (e.r/d.r)*100 >= 10 ? e.name : null
+						return (e.r/d.r)*100 >= 5 ? e.name : null
 					}
-				})	
+				})
+				
 		}
 
 		function zoomTo(v) {
