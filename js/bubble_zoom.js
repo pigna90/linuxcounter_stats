@@ -126,7 +126,10 @@ var margin = 10,
 			.on("click", function(d) {
 				//Choose action based on type of mode: zoom or nodes selection
 				if (focus != d && !statusRadioButton())
-					zoom(d), d3.event.stopPropagation();
+					if (d.depth != 4)
+						zoom(d), d3.event.stopPropagation();
+					else
+						zoom(d.parent), d3.event.stopPropagation();
 				else if(statusRadioButton())
 					rewriteBubbleChart(d.size)
 			})
@@ -140,9 +143,9 @@ var margin = 10,
 				svg.selectAll("circle")
 					.attr("opacity",function(e){
 						if(statusRadioButton())
-							return rootParent(1,e).size <= rootParent(1,d).size ? null : 0.2;
+							return rootParent(1,e).size <= rootParent(1,d).size ? null : 0.4;
 						else
-							return e != d && rootParent(d.depth,e) != d ? 0.2 : null;
+							return e != d && rootParent(d.depth,e) != d ? 0.4 : null;
 					})
 		   ;})
 		   .on("mouseout",function(d,i){
