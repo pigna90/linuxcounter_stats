@@ -46,10 +46,12 @@ function rewriteBubbleChart(n){
 	var rootButton = document.getElementById('root-button')
 	if(n == null){
 		rootButton.disabled = true
+		rootButton.style.display = "none"
 		rootButton.style.opacity = 0.6
 	}
 	else{
 		rootButton.disabled = false
+		rootButton.style.display = "inline-block"
 		rootButton.style.opacity = 1
 	}
 
@@ -160,7 +162,7 @@ var margin = 10,
 		   ;})
 		
 		circle.append("title")
-			.text(function(){return statusRadioButton() ? "Click to Redraw" : "Click to Zoom" })
+			.text(function(){return statusRadioButton() ? "Click to Reshape" : "Click to Zoom" })
 
 		var text = svg.selectAll("text").filter(".chart")
 			.data(nodes)
@@ -264,7 +266,7 @@ function radioChecked(e){
 	else{
 		labels[1].style.fontWeight = "bold"
 		labels[0].style.fontWeight = "normal"
-		circle.select("title").text("Click to Redraw")
+		circle.select("title").text("Click to Reshape")
 	}
 }
 

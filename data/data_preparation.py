@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import json
+from itertools import permutations
 
 def fix_cpu(df):
 	cpu_fixed = pd.read_csv('cpu_fixed.csv', skipinitialspace=True)
@@ -11,12 +12,11 @@ def fix_cpu(df):
 
 	return df
 
-def hierarchical_json(df):
-	order = ["distribution","class","architecture","numCores"]
-	dist_attr = df["distribution"].unique()
-	class_attr = df["class"].unique()
-	arch_attr = df["architecture"].unique()
-	cores_attr = df["numCores"].unique()
+def hierarchical_json(df,attributes):
+	level_1 = df[attributes[0]].unique()
+	level_2 = df[attributes[1]].unique()
+	level_3 = df[attributes[2]].unique()
+	level_4 = df[attributes[3]].unique()
 	
 	data_dict = {}
 	data_dict["name"] = "machine"
@@ -24,46 +24,46 @@ def hierarchical_json(df):
 	data_dict["children"] = []
 	data_dict["depth"] = 0
 	
-	for dist in dist_attr:
-		dist_dict = {}
-		dist_dict["name"] = dist
-		dist_dict["children"] = []
-		data_dict["children"].append(dist_dict)
+	for elem_1 in level_1:
+		level_1_dict = {}
+		level_1_dict["name"] = elem_1
+		level_1_dict["children"] = []
+		data_dict["children"].append(level_1_dict)
 		
-		dist_df = df[df["distribution"] == dist]
-		dist_dict["size"] = dist_df.shape[0]
-		dist_dict["depth"] = 1
-		class_attr = dist_df["class"].unique()
-		for class_ in class_attr:
-			class_dict = {}
-			class_dict["name"] = class_
-			class_dict["children"] = []
-			dist_dict["children"].append(class_dict)
+		level_1_df = df[df[attributes[0]] == elem_1]
+		level_1_dict["size"] = level_1_df.shape[0]
+		level_1_dict["depth"] = 1
+		level_2 = level_1_df[attributes[1]].unique()
+		for elem_2 in level_2:
+			level_2_dict = {}
+			level_2_dict["name"] = elem_2
+			level_2_dict["children"] = []
+			level_1_dict["children"].append(level_2_dict)
 			
-			class_df = dist_df[dist_df["class"] == class_]
-			class_dict["size"] = class_df.shape[0]
-			class_dict["depth"] = 2
-			arch_attr = class_df["architecture"].unique()
-			for arch in arch_attr:
-				arch_dict = {}
-				arch_dict["name"] = arch
-				arch_dict["children"] = []
-				class_dict["children"].append(arch_dict)
+			level_2_df = level_1_df[level_1_df[attributes[1]] == elem_2]
+			level_2_dict["size"] = level_2_df.shape[0]
+			level_2_dict["depth"] = 2
+			level_3 = level_2_df[attributes[2]].unique()
+			for elem_3 in level_3:
+				level_3_dict = {}
+				level_3_dict["name"] = elem_3
+				level_3_dict["children"] = []
+				level_2_dict["children"].append(level_3_dict)
 
-				arch_df = class_df[class_df["architecture"] == arch]
-				arch_dict["size"] = arch_df.shape[0]
-				arch_dict["depth"] = 3
-				core_attr = arch_df["numCores"].unique()
-				for core in core_attr:
-					core_dict = {}
-					core_dict["name"] = core
+				level_3_df = level_2_df[level_2_df[attributes[2]] == elem_3]
+				level_3_dict["size"] = level_3_df.shape[0]
+				level_3_dict["depth"] = 3
+				level_4 = level_3_df[attributes[3]].unique()
+				for elem_4 in level_4:
+					level_4_dict = {}
+					level_4_dict["name"] = elem_4
 
-					core_df = arch_df[arch_df["numCores"] == core]
-					core_dict["size"] = core_df.shape[0]
-					core_dict["depth"] = 4
+					level_4_df = level_3_df[level_3_df[attributes[3]] == elem_4]
+					level_4_dict["size"] = level_4_df.shape[0]
+					level_4_dict["depth"] = 4
 
-					if(core_df.shape[0] != 0):
-						arch_dict["children"].append(core_dict)
+					if(level_4_df.shape[0] != 0):
+						level_3_dict["children"].append(level_4_dict)
 
 	return data_dict
 	
@@ -90,7 +90,9 @@ def main():
 	for a in df:
 		df = df[df[a] != "unknown"]
 
-	data_out = hierarchical_json(df)
+	attributes = list(df.columns.values)
+
+	data_out = hierarchical_json(df,attributes)
 	
 	with open('data.json', 'w') as outfile:
 		json.dump(data_out, outfile, ensure_ascii=False)
