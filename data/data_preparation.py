@@ -90,12 +90,13 @@ def main():
 	for a in df:
 		df = df[df[a] != "unknown"]
 
-	attributes = list(df.columns.values)
+	attributes = list(map(list,permutations(list(df.columns.values))))
 
-	data_out = hierarchical_json(df,attributes)
-	
-	with open('data.json', 'w') as outfile:
-		json.dump(data_out, outfile, ensure_ascii=False)
+	for a in attributes:
+		data_out = hierarchical_json(df,a)
+		
+		with open('./json/' + '_'.join(a) + '.json', 'w') as outfile:
+			json.dump(data_out, outfile, ensure_ascii=False)
 	
 if __name__ == "__main__":
 	main()
