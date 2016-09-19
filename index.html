@@ -15,6 +15,15 @@
 	<script src="https://d3js.org/d3.v3.min.js"></script>
 	<!--Chart-->
 	<script src="js/bubble_zoom.js"></script>
+	<!--Google Analytics-->
+	<script>
+	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	  ga('create', 'UA-84323357-1', 'auto');
+	  ga('send', 'pageview');
+	</script>
 </head>
 
 <body>
@@ -29,7 +38,7 @@
 					<li><a href="lico_jupyter.html">Dataset Exploration</a></li>
 					<li><a href="#guide">Guide</a></li>
 					<li><a href="#about">About</a></li>
-					<div id="git-link"><a href="https://github.com/pigna90/va-project"><img src="img/GitHub-Mark-Light-32px.png"></a></div>
+					<div id="git-link"><a href="https://github.com/pigna90/va-project" target="_blank"><img src="img/GitHub-Mark-Light-32px.png"></a></div>
 				</ul>
 			</div>
 			<!--Chart and info box-->
@@ -48,13 +57,41 @@
 							</form>
 						</div>
 						<div class="node-information">
-							<p class="dashboard-label"><b>Info Node</b></p>
+							<p class="dashboard-label"><b>Dashboard</b></p>
 							<hr>
 							<p class="result" id="size">-</p>
-							<p>Distro</p><p class="result" id="distro">-</p>
-							<p>Class</p><p class="result" id="class">-</p>
-							<p>Architecture</p><p class="result" id="arch">-</p>
-							<p>Cores</p><p class="result" id="cores">-</p>
+							<hr class="level-divider">
+							<select id="level_1" onchange="hierarchy_changed(this)">
+								<option value="distribution" selected="selected">Distro</option>
+								<option value="class">Architecture</option>
+								<option value="architecture">Class</option>
+								<option value="numCores">Cores</option>
+							</select>
+							<p class="result" id="distro">-</p>
+							<hr class="level-divider">
+							<select id="level_2" onchange="hierarchy_changed(this)">
+								<option value="distribution">Distro</option>
+								<option value="class" selected="selected">Architecture</option>
+								<option value="architecture">Class</option>
+								<option value="numCores">Cores</option>
+							</select>
+							<p class="result" id="class">-</p>
+							<hr class="level-divider">
+							<select id="level_3" onchange="hierarchy_changed(this)">
+								<option value="distribution">Distro</option>
+								<option value="class">Architecture</option>
+								<option value="architecture" selected="selected">Class</option>
+								<option value="numCores">Cores</option>
+							</select>
+							<p class="result" id="arch">-</p>
+							<hr class="level-divider">
+							<select id="level_4" onchange="hierarchy_changed(this)">
+								<option value="distribution">Distro</option>
+								<option value="class">Architecture</option>
+								<option value="architecture">Class</option>
+								<option value="numCores" selected="selected">Cores</option>
+							</select>
+							<p class="result" id="cores">-</p>
 						</div>
 						<div id="button">
 							<button id="root-button" onclick="rewriteBubbleChart(null)" class="button buttonRoot" disabled>Main Chart</button>
@@ -71,7 +108,7 @@
 			<div class="col-md-10">
 				<h3 id="description">Dataset Description</h3>
 				<p class="content">
-					This view represents the data in <a href="https://www.linuxcounter.net/">linuxcounter.net</a>, a site that stores stats about the spread of linux devices in the world. The data, after the initial processing, contain the set of linux machines characterized by four attributes: <b>Distribution,Class,Architecture and Number of Cores</b>. The chart allows exploring the data in a hierarchical way in which each attribute represents a node.
+					This view represents the data in <a href="https://www.linuxcounter.net/" target="_blank">linuxcounter.net</a>, a site that stores stats about the spread of linux devices in the world. The data, after the initial processing, contain the set of linux machines characterized by four attributes: <b>Distribution,Class,Architecture and Number of Cores</b>. The chart allows exploring the data in a hierarchical way in which each attribute represents a node.
 				</p>
 				<h3 id="guide">Guide</h3>
 				<p class="content">
@@ -80,29 +117,29 @@
 				<div id="example">
 					<svg width="521" height="100">
 						<g>
-							<circle cx="100" cy="100" r="100" fill="#7CB518"/>
-							<text class="label" dy="95" dx="100">Distro</text>
+							<circle cx="100" cy="100" r="100" fill="#0086AF"/>
+							<text class="label" dy="95" dx="100">Level 1</text>
 						</g>
 						<g>
-							<circle cx="274" cy="100" r="70" fill="#F7B32B" />
-							<text class="label" dy="95" dx="274">Class</text>
+							<circle cx="274" cy="100" r="70" fill="#5FAD56" />
+							<text class="label" dy="95" dx="274">Level 2</text>
 						</g>
 						<g>
-							<circle cx="398" cy="100" r="50" fill="#5BC0EB" />
-							<text class="label" dy="95" dx="398">Arch.</text>
+							<circle cx="398" cy="100" r="50" fill="#E6AF2E" />
+							<text class="label" dy="95" dx="398">Level 3</text>
 						</g>
 						<g>
-							<circle cx="486" cy="100" r="35" fill="#EF5B5B" />
-							<text class="label" dy="95" dx="486">Cores</text>
+							<circle cx="486" cy="100" r="35" fill="#F55536" />
+							<text class="label" dy="95" dx="486">Level 4</text>
 						</g>
 					</svg>
 				</div>
 				<p class="content">
-					The interaction with the graph is possible through clicking on a bubble to <b>zoom</b> on it. This allows to select a set of machines of a specific hierarchy level. It's also possible to reshape only a subset of bubbles through  the <b>Ordered Selection</b> option in the Setting panel, a click on the radio button results in the disabling of the zoom function and at this point the selection of a bubble causes the highlighting of the bubbles with size less or equal than the selected one's. This function helps the selection of the smallest bubbles, those that have few elements. Then, the <b>Main Chart</b> button will appear to allow you go back to main chart. When the mouse override a node the <b>Info Nodes</b> shows information about that node.
+					By using the select boxes of <b>Dashboard</b> panel it's possible to change the order of hierarchy levels, in order to analyze different levels of aggregation. The interaction with the graph is possible through clicking on a bubble to <b>zoom</b> on it. This allows to select a set of machines of a specific hierarchy level. It's also possible to reshape only a subset of bubbles through  the <b>Ordered Selection</b> option in the Setting panel, a click on the radio button results in the disabling of the zoom function and at this point the selection of a bubble causes the highlighting of the bubbles with size less or equal than the selected one's. This function helps the selection of the smallest bubbles, those that have few elements. Then, the <b>Main Chart</b> button will appear to allow you go back to main chart. When the mouse override a node the <b>Dashboard</b> shows information about that node.
 				</p>
 				<h3 id="about">About</h3>
 				<p class="content">
-					This site is a project made for educational purpose as final test of course <a href="http://www.di.unipi.it/it/didattica/wbi-lm">Visual Analytics at University of Pisa</a>. The principal target is the use of <a href="https://d3js.org/">D3.js</a> in the context of data analysis. Folow the Git Hub link on the left for contacts and code.
+					This site is a project made for educational purpose as final test of course <a href="http://www.di.unipi.it/en/education/mbi" target="_blank">Visual Analytics at University of Pisa</a>. The principal target is the use of <a href="https://d3js.org/" target="_blank">D3.js</a> in the context of data analysis. Folow the Git Hub link on the left for contacts and code.
 				</p>
 				<br>
 				<br>

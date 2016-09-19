@@ -4,12 +4,16 @@ const C3 = "#353535";
 const C4 = "#7ea8be";
 const C5 = "#f2f2f2";
 
-window.onload = function(){
+window.onload = function(){console.log(color(1))
+	console.log(color(2))
+	console.log(color(3))
+	console.log(color(4))
 	bubbleChart(null)	
 }
 
 /*Return the root parent with depth=1 of node e*/
 function rootParent(d,e){
+	
 	if(e.depth > d)
 		return rootParent(d,e.parent)
 	else
@@ -58,8 +62,11 @@ function rewriteBubbleChart(n){
 	bubbleChart(n)
 }
 
-function bubbleChart(n){
-var margin = 10,
+function bubbleChart(n,json){
+
+	var json = jsonName()
+	
+	var margin = 10,
 		diameter = 800;
 
 	var linearSize = d3.scale.linear()
@@ -68,7 +75,7 @@ var margin = 10,
 
 	//Layout settings for bubbles
 	var pack = d3.layout.pack()
-		.padding(1)
+		.padding(2)
 		.size([diameter - margin, diameter - margin])
 		.value(function(d) { return linearSize(d.size); })
 		.sort(function(a, b) {return -(a.value - b.value);})
@@ -84,7 +91,7 @@ var margin = 10,
 		.attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
 	//Read json file
-	d3.json("data/data.json", function(error, root) {
+	d3.json("./data/json/" + json, function(error, root) {
 		if (error) throw error;
 
 		//Select node with size minor of n
@@ -133,7 +140,7 @@ var margin = 10,
 					else
 						zoom(d.parent), d3.event.stopPropagation();
 				else if(statusRadioButton())
-					rewriteBubbleChart(d.size)
+					rewriteBubbleChart(rootParent(1,d).size)
 			})
 			.on("mouseover",function(d,i){
 				writeNodeInformation(d)
@@ -175,7 +182,7 @@ var margin = 10,
 			.text(function(d) {
 				var name = d.name
 				name = name.replace(" ","\n")
-				return (d.r/maxR)*100 >= 20 ? toAcronym(d.name) : null
+				return (d.r/maxR)*100 >= 25 ? toAcronym(d.name) : null
 			})
 
 		
@@ -206,10 +213,10 @@ var margin = 10,
 				.each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; })
 				.text(function(e) {
 					if(d.name == "machine"){
-						return (e.r/maxR)*100 >= 20 ? toAcronym(e.name) : null
+						return (e.r/maxR)*100 >= 25 ? toAcronym(e.name) : null
 					}
 					else{
-						return (e.r/d.r)*100 >= 5 ? e.name : null
+						return (e.r/d.r)*100 >= 5 ? toAcronym(e.name) : null
 					}
 				})
 				
@@ -289,13 +296,14 @@ function toAcronym(s){
 		return s
 }
 
+
 function color(d){
 	switch(d){
 		case -1:
 			return "#729EA1";
 			break;
 		case 1:
-			return "#7CB518";
+			return "#3891A6";
 			break;
 
 		case 2:
@@ -307,11 +315,60 @@ function color(d){
 			break;
 
 		case 4:
-			return "#EF5B5B";
+			return "#596570";
 			break;
 			
 		default:
 			return C5;
 			break;
 	}
+}
+
+function hierarchy_changed(e){
+	var choices = 4;
+	var selected = [];
+	var old;
+
+	for(i=1; i<=choices; i++)
+		selected.push(document.getElementById("level_" + i).selectedIndex)
+
+	console.log(selected)
+
+	for(j=0; j<choices; j++)
+		if(selected.indexOf(j) == -1)
+			old = j;
+
+	console.log(old)
+
+	for(i=1; i<=choices; i++){
+		var view = document.getElementById("level_" + i)
+
+		if(view.selectedIndex == e.selectedIndex && view.getAttribute("id") != e.getAttribute("id"))
+			view.selectedIndex = old;
+	}
+	rewriteBubbleChart(null)
+}
+
+function jsonName(){
+	var choices = 4;
+	var selected = [];
+	for(i=1; i<=choices; i++)
+		switch(document.getElementById("level_" + i).selectedIndex){
+			case 0:
+				selected.push("distribution");
+				break;
+
+			case 1:
+				selected.push("architecture");
+				break;
+
+			case 2:
+				selected.push("class");;
+				break;
+
+			case 3:
+				selected.push("numCores");
+				break;
+		}
+	return selected.join("_") + ".json";
 }
