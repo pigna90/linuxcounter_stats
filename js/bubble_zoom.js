@@ -1,8 +1,10 @@
-const C1 = "#586f7c";
-const C2 = "#c8bfc7";
-const C3 = "#353535";
-const C4 = "#7ea8be";
-const C5 = "#f2f2f2";
+/*Palette*/
+const C1 = "#729EA1";
+const C2 = "#3891A6";
+const C3 = "#F7B32B";
+const C4 = "#5BC0EB";
+const C5 = "#596570";
+const C6 = "#f2f2f2";
 
 /*Javascript main*/
 window.onload = function(){
@@ -302,26 +304,26 @@ function toAcronym(s){
 function color(d){
 	switch(d){
 		case -1:
-			return "#729EA1";
+			return C1;
 			break;
 		case 1:
-			return "#3891A6";
+			return C2;
 			break;
 
 		case 2:
-			return "#F7B32B";
+			return C3;
 			break;
 
 		case 3:
-			return "#5BC0EB";
+			return C4;
 			break;
 
 		case 4:
-			return "#596570";
+			return C5;
 			break;
 			
 		default:
-			return C5;
+			return C6;
 			break;
 	}
 }
