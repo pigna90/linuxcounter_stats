@@ -4,82 +4,18 @@ const C3 = "#353535";
 const C4 = "#7ea8be";
 const C5 = "#f2f2f2";
 
-window.onload = function(){console.log(color(1))
-	console.log(color(2))
-	console.log(color(3))
-	console.log(color(4))
+/*Javascript main*/
+window.onload = function(){
 	bubbleChart(null)	
 }
 
-/*Return the root parent with depth=1 of node e*/
-function rootParent(d,e){
-	
-	if(e.depth > d)
-		return rootParent(d,e.parent)
-	else
-		return e
-}
-
-/*Return the status of radio buttons in mode panel*/
-function statusRadioButton(){
-	if(document.getElementById('view_all').checked)
-		return 0
-	else
-		return 1
-}
-
-/*Delete and rewrite chart*/
-function rewriteBubbleChart(n){
-	var svg = d3.select("svg")
-
-	svg.selectAll("text")
-		.remove()
-		
-	svg.selectAll("circle")
-		.remove()
-	
-	svg.remove()
-
-	b_selected = document.getElementById('view_selected')
-	b_all = document.getElementById('view_all')
-	b_selected.checked = false
-	b_all.checked = true
-	radioChecked(b_selected)
-	radioChecked(b_all)
-
-	var rootButton = document.getElementById('root-button')
-	if(n == null){
-		rootButton.disabled = true
-		rootButton.style.display = "none"
-		rootButton.style.opacity = 0.6
-	}
-	else{
-		rootButton.disabled = false
-		rootButton.style.display = "inline-block"
-		rootButton.style.opacity = 1
-	}
-
-	bubbleChart(n)
-}
-
-function bubbleChart(n,json){
-
+/*Draws first 10 elements of data that comes from json*/
+function bubbleChart(n){
 	var json = jsonName()
 	
 	var margin = 10,
 		diameter = 800;
-
-	var linearSize = d3.scale.linear()
-		.domain([1,13688])
-		.range([10,13688])
-
-	//Layout settings for bubbles
-	var pack = d3.layout.pack()
-		.padding(2)
-		.size([diameter - margin, diameter - margin])
-		.value(function(d) { return linearSize(d.size); })
-		.sort(function(a, b) {return -(a.value - b.value);})
-
+		
 	//Select div that will contain chart and add svg element
 	var svg = d3.select("div#chart")
 		.classed("svg-container", true) //container class to make it responsive
@@ -90,10 +26,21 @@ function bubbleChart(n,json){
 		.append("g")
 		.attr("transform", "translate(" + diameter / 2 + "," + diameter / 2 + ")");
 
-	//Read json file
+	//Read json from file
 	d3.json("./data/json/" + json, function(error, root) {
 		if (error) throw error;
 
+		var linearSize = d3.scale.linear()
+		.domain([1,root.size])
+		.range([10,root.size])
+
+		//Layout settings for bubbles
+		var pack = d3.layout.pack()
+			.padding(2)
+			.size([diameter - margin, diameter - margin])
+			.value(function(d) { return linearSize(d.size); })
+			.sort(function(a, b) {return -(a.value - b.value);})
+		
 		//Select node with size minor of n
 		if (n != null)
 			root.children = (root.children).filter(function(d){
@@ -106,17 +53,14 @@ function bubbleChart(n,json){
 			nodes = pack.nodes(root),
 			view;
 
-		//Count machines
-		var count_machines = 0;
-		var maxR = 0;
+		//Count number of machines
+		var max_radius = 0;
 		for(i in root.children){
-			count_machines += root.children[i].size;
-			
-			if(root.children[i].r > maxR)
-				maxR = root.children[i].r;
+			if(root.children[i].r > max_radius)
+				max_radius = root.children[i].r;
 		}
 		
-		document.getElementById("size").innerHTML = count_machines + " Machines";
+		document.getElementById("size").innerHTML = root.size + " Machines";
 
 		var circle = svg.selectAll("circle")
 			.data(nodes)
@@ -126,6 +70,7 @@ function bubbleChart(n,json){
 				if(d.depth == 0)
 					return color(d.depth)
 				else
+					//To void color override
 					if (d.parent.r == d.r && d.depth != 4){
 						return color(d.parent.depth)
 					}
@@ -140,34 +85,37 @@ function bubbleChart(n,json){
 					else
 						zoom(d.parent), d3.event.stopPropagation();
 				else if(statusRadioButton())
-					rewriteBubbleChart(rootParent(1,d).size)
+					rewriteBubbleChart(parentOf(1,d).size)
 			})
 			.on("mouseover",function(d,i){
+				//Write node informations on dashboard
 				writeNodeInformation(d)
-				
+				//Show number of machines of node selected
 				var machines = document.getElementById("size")
 				machines.innerHTML = d.size + " Machines";
 				machines.style.color = color(d.depth)
-				//Highlight only node with size minor of node selected e
 				svg.selectAll("circle")
 					.attr("opacity",function(e){
 						if(statusRadioButton())
-							return rootParent(1,e).size <= rootParent(1,d).size ? null : 0.4;
+							//Highlight only node with size minor of node selected d
+							return parentOf(1,e).size <= parentOf(1,d).size ? null : 0.4;
 						else
-							return e != d && rootParent(d.depth,e) != d ? 0.4 : null;
+							//Highlight only the selected node
+							return e != d && parentOf(d.depth,e) != d ? 0.4 : null;
 					})
 		   ;})
 		   .on("mouseout",function(d,i){
 				deleteNodeInformation(d)
 
 				var machines = document.getElementById("size")
-				machines.innerHTML = count_machines + " Machines";
+				machines.innerHTML = root.size + " Machines";
 				machines.style.color = "black"
 				
 				svg.selectAll("circle")
 				.attr("opacity",null)
 		   ;})
-		
+
+		//Tooltip for circles
 		circle.append("title")
 			.text(function(){return statusRadioButton() ? "Click to Reshape" : "Click to Zoom" })
 
@@ -180,14 +128,14 @@ function bubbleChart(n,json){
 			.attr("text-anchor", "middle")
 			.attr("dy", ".35em")
 			.text(function(d) {
-				var name = d.name
-				name = name.replace(" ","\n")
-				return (d.r/maxR)*100 >= 25 ? toAcronym(d.name) : null
+				//If radius is minor of 25% then write the name inside
+				return (d.r/max_radius)*100 >= 25 ? toAcronym(d.name) : null
 			})
 
 		
 		var node = svg.selectAll("circle,text");
 
+		//Zoom-out event for body
 		d3.select("body")
 			.on("click", function() { zoom(root); });
 
@@ -198,7 +146,7 @@ function bubbleChart(n,json){
 			var focus0 = focus; focus = d;
 
 			var transition = d3.transition()
-				.duration(d3.event.altKey ? 7500 : 750)
+				.duration(750)
 				.tween("zoom", function(d) {
 					var i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2 + margin]);
 					return function(t) { zoomTo(i(t)); };
@@ -213,7 +161,7 @@ function bubbleChart(n,json){
 				.each("end", function(d) { if (d.parent !== focus) this.style.display = "none"; })
 				.text(function(e) {
 					if(d.name == "machine"){
-						return (e.r/maxR)*100 >= 25 ? toAcronym(e.name) : null
+						return (e.r/max_radius)*100 >= 25 ? toAcronym(e.name) : null
 					}
 					else{
 						return (e.r/d.r)*100 >= 5 ? toAcronym(e.name) : null
@@ -231,30 +179,85 @@ function bubbleChart(n,json){
 	d3.select(self.frameElement).style("height", diameter + "px");
 }
 
-function writeNodeInformation(n){
-	if(n.depth != 0){
-		var label;
-		switch(n.depth){
-			case 1: label="distro";
-					break;
-			case 2: label="class";
-					break;
-			case 3: label="arch";
-					break;
-			case 4: label="cores";
-					break;
-			default: label="-";
-					break;
-		}
-		textBox = document.getElementById(label)
-		textBox.innerHTML = n.name;
-		textBox.style.color = color(n.depth)
-		writeNodeInformation(n.parent)
+/*Reshaping chart due to Ordered Selection or hierarchy order changing*/
+function rewriteBubbleChart(n){
+	//Svg removing
+	var svg = d3.select("svg")
+
+	svg.selectAll("text")
+		.remove()	
+	svg.selectAll("circle")
+		.remove()
+	svg.remove()
+
+	var rootButton = document.getElementById('root-button')
+	//Reshape the chart with same number of elements
+	if(n == null){
+		rootButton.disabled = true
+		rootButton.style.display = "none"
+		rootButton.style.opacity = 0.6
 	}
-	else
-		return null;
+	//Reshape the chart with n number of elements
+	else{
+		b_selected = document.getElementById('view_selected')
+		b_all = document.getElementById('view_all')
+
+		//Radio buttons to original state
+		b_selected.checked = false
+		b_all.checked = true
+		radioChecked(b_selected)
+		radioChecked(b_all)
+
+		//Hiding Root Button
+		rootButton.disabled = false
+		rootButton.style.display = "inline-block"
+		rootButton.style.opacity = 1
+	}
+
+	bubbleChart(n)
 }
 
+/*Return the parent with depth d of node e*/
+function parentOf(d,e){
+	if(e.depth > d)
+		return parentOf(d,e.parent)
+	else
+		return e
+}
+
+/*Return the status of radio buttons in mode panel*/
+function statusRadioButton(){
+	if(document.getElementById('view_all').checked)
+		return 0
+	else
+		return 1
+}
+
+/*Write node informations on the dashboard based on his depth*/
+function writeNodeInformation(n){
+	if(n.depth != 0){
+		var id;
+		switch(n.depth){
+			case 1: id="distro";
+					break;
+			case 2: id="class";
+					break;
+			case 3: id="arch";
+					break;
+			case 4: id="cores";
+					break;
+			default: id="-";
+					break;
+		}
+		textBox = document.getElementById(id)
+		textBox.innerHTML = n.name;
+		textBox.style.color = color(n.depth)
+
+		writeNodeInformation(n.parent)
+	}
+}
+
+/*Clear Dashboard */
 function deleteNodeInformation(n){
 	document.getElementById("distro").innerHTML = "-";
 	document.getElementById("class").innerHTML = "-";
@@ -262,12 +265,15 @@ function deleteNodeInformation(n){
 	document.getElementById("cores").innerHTML = "-";
 }
 
+/*Function for click event on radio buttons*/
 function radioChecked(e){
 	labels = document.getElementById("view-form").getElementsByTagName("label");
 	var circle = d3.select("svg").selectAll("circle")
 	if(labels[0].getAttribute("for") == e.getAttribute("id")){
+		//Changing the properties of buttons and his labels
 		labels[0].style.fontWeight = "bold"
 		labels[1].style.fontWeight = "normal"
+		//Add tooltip to each circle
 		circle.select("title").text("Click to Zoom")
 	}
 	else{
@@ -277,12 +283,7 @@ function radioChecked(e){
 	}
 }
 
-function checkVisible(elm) {
-  var rect = elm.getBoundingClientRect();
-  var viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
-  return !(rect.bottom < 0 || rect.top - viewHeight >= 0);
-}
-
+/*String s to his acronym*/
 function toAcronym(s){
 	words = s.split(" ")
 	var out = ""
@@ -297,6 +298,7 @@ function toAcronym(s){
 }
 
 
+/*Return color based on depth d*/
 function color(d){
 	switch(d){
 		case -1:
@@ -324,31 +326,34 @@ function color(d){
 	}
 }
 
-function hierarchy_changed(e){
-	var choices = 4;
+/*Make the select boxes mutually exclusive and*/
+/*reshape chart in case of changing.*/
+function hierarchyChanged(e){
+	var choices = 4; //Number of attributes
 	var selected = [];
 	var old;
 
+	//List with indexes of elements selected
 	for(i=1; i<=choices; i++)
 		selected.push(document.getElementById("level_" + i).selectedIndex)
 
-	console.log(selected)
-
+	//Find element missing on the select boxes
 	for(j=0; j<choices; j++)
 		if(selected.indexOf(j) == -1)
 			old = j;
 
-	console.log(old)
-
+	//Replace element
 	for(i=1; i<=choices; i++){
 		var view = document.getElementById("level_" + i)
 
 		if(view.selectedIndex == e.selectedIndex && view.getAttribute("id") != e.getAttribute("id"))
 			view.selectedIndex = old;
 	}
+	//Rewrite chart
 	rewriteBubbleChart(null)
 }
 
+/*Return the name of json file based on element selected in select boxes*/
 function jsonName(){
 	var choices = 4;
 	var selected = [];

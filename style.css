@@ -50,7 +50,6 @@ li a:hover:not(.active) {
     background-color: #555;
     color: white;
 }
-/***************************/
 
 /*Nodes type*/
 .node {
@@ -80,7 +79,6 @@ li a:hover:not(.active) {
 .node--root {
   pointer-events: none;
 }
-/***************************/
 
 path {
   stroke: #fff;
@@ -253,4 +251,3 @@ hr{
 	text-align: center;
 	margin: 10px;
 }
-
