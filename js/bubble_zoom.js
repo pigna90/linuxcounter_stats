@@ -100,10 +100,10 @@ function bubbleChart(n){
 					.attr("opacity",function(e){
 						if(statusRadioButton())
 							//Highlight only node with size minor of node selected d
-							return parentOf(1,e).size <= parentOf(1,d).size ? null : 0.4;
+							return parentOf(1,e).size <= parentOf(1,d).size ? null : 0.2;
 						else
 							//Highlight only the selected node
-							return e != d && parentOf(d.depth,e) != d ? 0.4 : null;
+							return e != d && parentOf(d.depth,e) != d ? 0.2 : null;
 					})
 		   ;})
 		   .on("mouseout",function(d,i){
