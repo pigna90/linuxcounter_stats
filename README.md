@@ -13,3 +13,6 @@ The website is online at this link: http://linuxcounterstats.altervista.org/
 [Alessandro Romano]: mailto:alessandro.romano@linux.com
 [LinuxCounter]: https://www.linuxcounter.net/
 [D3.js]: https://d3js.org/
+
+
+![N|Solid](https://www.gnu.org/graphics/lgplv3-147x51.png)
