@@ -8,9 +8,8 @@ This is a project made for educational purpose for the course of Visual Analytic
 The website is online at this link (please, use Chrome): http://linuxcounterstats.altervista.org/
 
 ### Author
-[Alessandro Romano]
+Alessandro Romano
 
-[Alessandro Romano]: mailto:alessandro.romano@linux.com
 [LinuxCounter]: https://www.linuxcounter.net/
 [D3.js]: https://d3js.org/
 
