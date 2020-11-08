@@ -9,6 +9,3 @@ The website is online at this link (please, use Chrome): http://linuxcounterstat
 
 [LinuxCounter]: https://www.linuxcounter.net/
 [D3.js]: https://d3js.org/
-
-
-![N|Solid](https://www.gnu.org/graphics/lgplv3-147x51.png)
